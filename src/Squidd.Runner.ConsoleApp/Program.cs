@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using Squidd.Runner.ConsoleApp.Responders;
 
 namespace Squidd.Runner.ConsoleApp
 {
@@ -12,7 +13,10 @@ namespace Squidd.Runner.ConsoleApp
         static void Main(string[] args)
         {
             Console.WriteLine("Initializing runner...");
-            new RunManager().ListenAsync(IPAddress.Parse(IpAddress), Port);
+            var runManager = new RunManager();
+            runManager.AddResponder(new InfoResponder());
+            runManager.AddResponder(new PowershellResponder());
+            runManager.ListenAsync(IPAddress.Parse(IpAddress), Port);
             Console.WriteLine("Initialised!");
             Console.WriteLine("Press enter to close");
             Console.ReadLine();

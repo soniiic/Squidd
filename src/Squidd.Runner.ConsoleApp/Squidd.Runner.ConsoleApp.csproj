@@ -49,7 +49,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommunicationService.cs" />
+    <Compile Include="Responders\InfoResponder.cs" />
+    <Compile Include="Responders\IResponder.cs" />
+    <Compile Include="Responders\PowershellResponder.cs" />
+    <Compile Include="SocketCommunicationService.cs" />
     <Compile Include="PowershellOutputEventArgs.cs" />
     <Compile Include="PowerShellRunner.cs" />
     <Compile Include="Program.cs" />

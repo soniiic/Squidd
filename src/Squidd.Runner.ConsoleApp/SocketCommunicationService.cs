@@ -19,7 +19,7 @@ namespace Squidd.Runner.ConsoleApp
 
         private void OnOutput(object sender, PowershellOutputEventArgs args)
         {
-            socket.Send(Encoding.ASCII.GetBytes($"{args.LineNumber}: {args.Message}\n"));
+            socket.Send(Encoding.UTF8.GetBytes($"{args.LineNumber}: {args.Message}\n"));
         }
     }
 }

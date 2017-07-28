@@ -36,7 +36,7 @@ namespace Squidd.Runner.ConsoleApp
                 {
                     var rawHeader = new byte[4];
                     socket.Receive(rawHeader, 4, SocketFlags.None);
-                    var header = Encoding.ASCII.GetString(rawHeader);
+                    var header = Encoding.UTF8.GetString(rawHeader);
 
                     byte[] allData = null;
                     foreach (var responder in responders.Where(r => r.RespondsToHeader(header)))

@@ -21,7 +21,7 @@ namespace Squidd.Commander.ConsoleApp
         {
             var client = new TcpClient(ipAddress, port);
             var stream = client.GetStream();
-            var bytesToSend = Encoding.ASCII.GetBytes(header + (payload ?? string.Empty));
+            var bytesToSend = Encoding.UTF8.GetBytes(header + (payload ?? string.Empty));
 
             Console.WriteLine("Sending script...");
             stream.Write(bytesToSend, 0, bytesToSend.Length);
@@ -33,9 +33,9 @@ namespace Squidd.Commander.ConsoleApp
                 {
                     var bytesToRead = new byte[client.ReceiveBufferSize];
                     var bytesRead = stream.Read(bytesToRead, 0, client.ReceiveBufferSize);
-                    Console.Write(Encoding.ASCII.GetString(bytesToRead, 0, bytesRead));
+                    Console.Write(Encoding.UTF8.GetString(bytesToRead, 0, bytesRead));
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
             }
             
             client.Close();

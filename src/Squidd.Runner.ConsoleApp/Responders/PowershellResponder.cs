@@ -12,7 +12,7 @@ namespace Squidd.Runner.ConsoleApp.Responders
 
         public void Process(byte[] data, Socket socket)
         {
-            var script = Encoding.ASCII.GetString(data);
+            var script = Encoding.UTF8.GetString(data);
             var powerShellRunner = new PowerShellRunner();
             var communicationService = new SocketCommunicationService(socket);
             communicationService.SubscribeToOutputOf(powerShellRunner);

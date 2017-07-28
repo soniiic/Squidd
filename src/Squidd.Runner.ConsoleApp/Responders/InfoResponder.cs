@@ -14,7 +14,7 @@ namespace Squidd.Runner.ConsoleApp.Responders
 
         public void Process(byte[] data, Socket socket)
         {
-            socket.Send(Encoding.ASCII.GetBytes($"Name: {Environment.MachineName}\n" +
+            socket.Send(Encoding.UTF8.GetBytes($"Name: {Environment.MachineName}\n" +
                                                 $"Squidd Runner Version: {Assembly.GetExecutingAssembly().GetName().Version}\n" +
                                                 $"Windows: {Environment.OSVersion}\n"));
         }

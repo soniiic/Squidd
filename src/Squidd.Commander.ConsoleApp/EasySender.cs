@@ -17,14 +17,18 @@ namespace Squidd.Commander.ConsoleApp
             this.port = port;
         }
 
-        public void Send(string header, string payload = null)
+        public void Send(string header, byte[] payload = null)
         {
             var client = new TcpClient(ipAddress, port);
             var stream = client.GetStream();
-            var bytesToSend = Encoding.UTF8.GetBytes(header + (payload ?? string.Empty));
 
             Console.WriteLine("Sending script...");
-            stream.Write(bytesToSend, 0, bytesToSend.Length);
+            var headerBytes = Encoding.UTF8.GetBytes(header);
+            stream.Write(headerBytes, 0, headerBytes.Length);
+            if (payload != null)
+            {
+                stream.Write(payload, 0, payload.Length);
+            }
             Console.WriteLine("Waiting for response...");
 
             while (client.Client.IsConnected())
@@ -37,8 +41,14 @@ namespace Squidd.Commander.ConsoleApp
                 }
                 Thread.Sleep(100);
             }
-            
+
             client.Close();
+        }
+
+        public void Send(string header, string payload)
+        {
+            var bytes = Encoding.UTF8.GetBytes(payload ?? string.Empty);
+            Send(header, bytes);
         }
     }
 }

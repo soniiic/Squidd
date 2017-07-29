@@ -17,6 +17,7 @@ namespace Squidd.Commander.ConsoleApp
             var easySender = new EasySender(IpAddress, Port);
 
             easySender.Send("INFO");
+            easySender.Send("STOR", new byte[0]);
 
             while (true)
             {

@@ -29,6 +29,8 @@ namespace Squidd.Commander.ConsoleApp
             {
                 stream.Write(payload, 0, payload.Length);
             }
+            var endOfStream = Encoding.ASCII.GetBytes("SQUIDDEND");
+            stream.Write(endOfStream, 0, endOfStream.Length);
             Console.WriteLine("Waiting for response...");
 
             while (client.Client.IsConnected())

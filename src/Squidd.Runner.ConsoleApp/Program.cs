@@ -15,9 +15,11 @@ namespace Squidd.Runner.ConsoleApp
         {
             Console.WriteLine("Initializing runner...");
             var runManager = new RunManager();
-            runManager.AddResponder(new FileStorageResponder(new ApplicationSettings()));
+            var applicationSettings = new ApplicationSettings();
+
+            runManager.AddResponder(new FileStorageResponder(applicationSettings));
             runManager.AddResponder(new InfoResponder());
-            runManager.AddResponder(new PowershellResponder());
+            runManager.AddResponder(new PowershellResponder(applicationSettings));
             runManager.ListenAsync(IPAddress.Parse(IpAddress), Port);
             Console.WriteLine("Initialised!");
             Console.WriteLine("Press enter to close");

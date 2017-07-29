@@ -16,7 +16,8 @@ namespace Squidd.Runner.ConsoleApp.Responders
         {
             socket.Send(Encoding.UTF8.GetBytes($"Name: {Environment.MachineName}\n" +
                                                 $"Squidd Runner Version: {Assembly.GetExecutingAssembly().GetName().Version}\n" +
-                                                $"Windows: {Environment.OSVersion}\n"));
+                                                $"Windows: {Environment.OSVersion}\n" +
+                                               $"Busy: false"));
         }
     }
 }

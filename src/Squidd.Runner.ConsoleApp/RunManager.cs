@@ -44,7 +44,7 @@ namespace Squidd.Runner.ConsoleApp
                         allData = allData ?? ReceiveAll(socket);
                         responder.Process(allData, socket);
                     }
-                    
+
                     socket.Close();
                 });
             }
@@ -54,7 +54,7 @@ namespace Squidd.Runner.ConsoleApp
         {
             var buffer = new List<byte>();
 
-            while (socket.Available > 0)
+            while (Encoding.ASCII.GetString(buffer.Skip(buffer.Count-9).Take(9).ToArray()) != "SQUIDDEND")
             {
                 var currByte = new byte[socket.ReceiveBufferSize];
                 var byteCounter = socket.Receive(currByte, socket.ReceiveBufferSize, SocketFlags.None);
@@ -65,7 +65,7 @@ namespace Squidd.Runner.ConsoleApp
                 }
             }
 
-            return buffer.ToArray();
+            return buffer.Take(buffer.Count-9).ToArray();
         }
     }
 }

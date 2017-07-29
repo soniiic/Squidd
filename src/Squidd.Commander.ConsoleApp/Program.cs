@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Squidd.Commander.ConsoleApp
 {
@@ -20,6 +21,11 @@ namespace Squidd.Commander.ConsoleApp
             easySender.Send("STOR", new byte[0]);
 
             easySender.Send("UNSP");
+
+            Task.Run(() => easySender.Send("PS", "Start-Sleep -s 10"));
+            Thread.Sleep(1000);
+            easySender.Send("INFO");
+
 
             while (true)
             {

@@ -24,7 +24,7 @@ namespace Squidd.Runner.ConsoleApp
             allResponders.Add(responder);
         }
 
-        public async void ListenAsync(IPAddress ipAddress, int port)
+        public void Listen(IPAddress ipAddress, int port)
         {
             var listener = new TcpListener(ipAddress, port);
             listener.Start();
@@ -32,50 +32,61 @@ namespace Squidd.Runner.ConsoleApp
             {
                 var client = listener.AcceptTcpClient();
                 Console.WriteLine("Connection accepted.");
-
-                await Task.Run(() =>
-                {
-                    var stream = client.GetStream();
-
-                    List<IResponder> responders;
-                    byte[] allData = null;
-                    using (var dataReader = new BinaryReader(stream, Encoding.UTF8, true))
-                    {
-                        var header = dataReader.ReadString();
-
-                        responders = allResponders.Where(r => r.RespondsToHeader(header)).ToList();
-
-                        if (!responders.Any())
-                        {
-                            RespondWithNotSupported(client, header);
-                            return;
-                        }
-
-                        if (responders.Any(r => r.MakesBusy))
-                        {
-                            Global.IsBusy = true;
-                        }
-
-                        var payloadSize = Convert.ToInt32(dataReader.ReadUInt32());
-                        allData = dataReader.ReadBytes(payloadSize);
-                    }
-
-                    using (var dataWriter = new BinaryWriter(stream, Encoding.UTF8, true))
-                    {
-                        foreach (var responder in responders)
-                        {
-                            responder.Process(allData, dataWriter);
-                        }
-                    }
-
-                    if (responders.Any(r => r.MakesBusy))
-                    {
-                        Global.IsBusy = false;
-                    }
-
-                    client.Close();
-                });
+                Task.Run(() => { HandleConnection(client); });
             }
+        }
+
+        private void HandleConnection(TcpClient client)
+        {
+            List<IResponder> responders;
+            byte[] allData;
+            using (var dataReader = new BinaryReader(client.GetStream(), Encoding.UTF8, true))
+            {
+                var header = dataReader.ReadString();
+                Console.WriteLine($"Received {header} command.");
+
+                responders = allResponders.Where(r => r.RespondsToHeader(header)).ToList();
+
+                if (!responders.Any())
+                {
+                    RespondWithNotSupported(client, header);
+                    return;
+                }
+
+                var payloadSize = Convert.ToInt32(dataReader.ReadUInt32());
+                allData = dataReader.ReadBytes(payloadSize);
+            }
+
+            using (var dataWriter = new BinaryWriter(client.GetStream(), Encoding.UTF8, true))
+            {
+                if (responders.Any(r => r.MakesBusy))
+                {
+                    if (Global.IsBusy || !Global.SetBusy())
+                    {
+                        RespondWithBusy(client, dataWriter);
+                        return;
+                    }
+                }
+
+                foreach (var responder in responders)
+                {
+                    responder.Process(allData, dataWriter);
+                }
+            }
+
+            if (responders.Any(r => r.MakesBusy))
+            {
+                Global.ClearBusy();
+            }
+
+            client.Close();
+        }
+
+        private static void RespondWithBusy(TcpClient client, BinaryWriter dataWriter)
+        {
+            dataWriter.Write("EROR");
+            dataWriter.Write("Runner is busy.");
+            client.Close();
         }
 
         private static void RespondWithNotSupported(TcpClient client, string header)

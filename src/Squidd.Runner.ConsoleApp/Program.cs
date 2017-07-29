@@ -20,7 +20,7 @@ namespace Squidd.Runner.ConsoleApp
             runManager.AddResponder(new FileStorageResponder(applicationSettings));
             runManager.AddResponder(new InfoResponder());
             runManager.AddResponder(new PowershellResponder(applicationSettings));
-            runManager.ListenAsync(IPAddress.Parse(IpAddress), Port);
+            runManager.Listen(IPAddress.Parse(IpAddress), Port);
             Console.WriteLine("Initialised!");
             Console.WriteLine("Press enter to close");
             Console.ReadLine();

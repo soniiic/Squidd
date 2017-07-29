@@ -56,7 +56,7 @@ namespace Squidd.Commander.ConsoleApp
         {
             using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
             {
-                while (client.Client.IsConnected())
+                while (client.Client.IsConnected() || client.Available > 0)
                 {
                     try
                     {

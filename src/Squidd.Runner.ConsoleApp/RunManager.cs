@@ -91,8 +91,11 @@ namespace Squidd.Runner.ConsoleApp
 
         private static void RespondWithNotSupported(TcpClient client, string header)
         {
-            client.Client.Send(Encoding.UTF8.GetBytes("EROR"));
-            client.Client.Send(Encoding.UTF8.GetBytes($"Header not supported: {header}"));
+            using (var dataWriter = new BinaryWriter(client.GetStream(), Encoding.UTF8, true))
+            {
+                dataWriter.Write("EROR");
+                dataWriter.Write($"Header not supported: {header}.");
+            }
             client.Close();
         }
     }

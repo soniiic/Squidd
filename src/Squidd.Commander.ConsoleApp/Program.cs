@@ -19,9 +19,11 @@ namespace Squidd.Commander.ConsoleApp
             easySender.Send("INFO");
             easySender.Send("STOR", new byte[0]);
 
+            easySender.Send("UNSP");
+
             while (true)
             {
-                var header = "PS  ";
+                var header = "PS";
                 var payload = @"Function Get-Fib ($n) {
      $current = $previous = 1;
      while ($current -lt $n) {

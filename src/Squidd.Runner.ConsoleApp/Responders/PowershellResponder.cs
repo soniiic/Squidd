@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using Squidd.Runner.ConsoleApp.Config;
@@ -15,14 +16,14 @@ namespace Squidd.Runner.ConsoleApp.Responders
 
         public bool RespondsToHeader(string header)
         {
-            return header == "PS  ";
+            return header == "PS";
         }
 
-        public void Process(byte[] data, Socket socket)
+        public void Process(byte[] data, BinaryWriter writer)
         {
             var script = Encoding.UTF8.GetString(data);
             var powerShellRunner = new PowerShellRunner(settings);
-            var communicationService = new SocketCommunicationService(socket);
+            var communicationService = new SocketCommunicationService(writer);
             communicationService.SubscribeToOutputOf(powerShellRunner);
             powerShellRunner.RunScript(script);
         }

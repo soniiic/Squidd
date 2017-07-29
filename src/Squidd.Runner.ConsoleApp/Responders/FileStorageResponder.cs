@@ -20,19 +20,19 @@ namespace Squidd.Runner.ConsoleApp.Responders
             return header == "STOR";
         }
 
-        public void Process(byte[] data, Socket socket)
+        public void Process(byte[] data, BinaryWriter writer)
         {
             var fileId = Guid.NewGuid().ToString();
             var fullPath = GetFullPath(fileId);
             try
             {
                 File.WriteAllBytes(fullPath, data);
-                socket.Send(Encoding.UTF8.GetBytes(fileId));
+                writer.Write(fileId);
             }
             catch (Exception e)
             {
-                socket.Send(Encoding.UTF8.GetBytes("EROR"));
-                socket.Send(Encoding.UTF8.GetBytes(e.Message));
+                writer.Write("EROR");
+                writer.Write(e.Message);
             }
         }
 

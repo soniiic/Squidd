@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -29,26 +30,42 @@ namespace Squidd.Runner.ConsoleApp
             listener.Start();
             while (true)
             {
-                var socket = listener.AcceptSocket();
+                var client = listener.AcceptTcpClient();
                 Console.WriteLine("Connection accepted.");
 
                 await Task.Run(() =>
                 {
-                    var rawHeader = new byte[4];
-                    socket.Receive(rawHeader, 4, SocketFlags.None);
-                    var header = Encoding.UTF8.GetString(rawHeader);
+                    var stream = client.GetStream();
 
+                    List<IResponder> responders;
                     byte[] allData = null;
-                    var responders = allResponders.Where(r => r.RespondsToHeader(header));
-                    if (responders.Any(r => r.MakesBusy))
+                    using (var dataReader = new BinaryReader(stream, Encoding.UTF8, true))
                     {
-                        Global.IsBusy = true;
+                        var header = dataReader.ReadString();
+
+                        responders = allResponders.Where(r => r.RespondsToHeader(header)).ToList();
+
+                        if (!responders.Any())
+                        {
+                            RespondWithNotSupported(client, header);
+                            return;
+                        }
+
+                        if (responders.Any(r => r.MakesBusy))
+                        {
+                            Global.IsBusy = true;
+                        }
+
+                        var payloadSize = Convert.ToInt32(dataReader.ReadUInt32());
+                        allData = dataReader.ReadBytes(payloadSize);
                     }
 
-                    foreach (var responder in responders)
+                    using (var dataWriter = new BinaryWriter(stream, Encoding.UTF8, true))
                     {
-                        allData = allData ?? ReceiveAll(socket);
-                        responder.Process(allData, socket);
+                        foreach (var responder in responders)
+                        {
+                            responder.Process(allData, dataWriter);
+                        }
                     }
 
                     if (responders.Any(r => r.MakesBusy))
@@ -56,27 +73,16 @@ namespace Squidd.Runner.ConsoleApp
                         Global.IsBusy = false;
                     }
 
-                    socket.Close();
+                    client.Close();
                 });
             }
         }
 
-        private static byte[] ReceiveAll(Socket socket)
+        private static void RespondWithNotSupported(TcpClient client, string header)
         {
-            var buffer = new List<byte>();
-
-            while (Encoding.ASCII.GetString(buffer.Skip(buffer.Count - 9).Take(9).ToArray()) != "SQUIDDEND")
-            {
-                var currByte = new byte[socket.ReceiveBufferSize];
-                var byteCounter = socket.Receive(currByte, socket.ReceiveBufferSize, SocketFlags.None);
-
-                if (byteCounter > 0)
-                {
-                    buffer.AddRange(currByte.Take(byteCounter));
-                }
-            }
-
-            return buffer.Take(buffer.Count - 9).ToArray();
+            client.Client.Send(Encoding.UTF8.GetBytes("EROR"));
+            client.Client.Send(Encoding.UTF8.GetBytes($"Header not supported: {header}"));
+            client.Close();
         }
     }
 }

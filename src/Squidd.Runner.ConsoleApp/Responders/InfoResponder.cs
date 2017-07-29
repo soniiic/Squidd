@@ -1,7 +1,11 @@
 using System;
+using System.Diagnostics.Eventing.Reader;
+using System.Dynamic;
+using System.IO;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Squidd.Runner.ConsoleApp.Responders
 {
@@ -12,12 +16,16 @@ namespace Squidd.Runner.ConsoleApp.Responders
             return header == "INFO";
         }
 
-        public void Process(byte[] data, Socket socket)
+        public void Process(byte[] data, BinaryWriter writer)
         {
-            socket.Send(Encoding.UTF8.GetBytes($"Name: {Environment.MachineName}\n" +
-                                                $"Squidd Runner Version: {Assembly.GetExecutingAssembly().GetName().Version}\n" +
-                                                $"Windows: {Environment.OSVersion}\n" +
-                                               $"Busy: {Global.IsBusy}"));
+            dynamic info = new ExpandoObject();
+            info.Name = Environment.MachineName;
+            info.RunnerVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            info.WindowsVersion = Environment.OSVersion.ToString();
+            info.Bits = Environment.Is64BitOperatingSystem ? 64 : 32;
+            info.IsBusy = Global.IsBusy;
+
+            writer.Write(JsonConvert.SerializeObject(info));
         }
 
         public bool MakesBusy => false;

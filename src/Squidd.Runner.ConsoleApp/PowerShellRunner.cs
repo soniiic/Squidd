@@ -1,16 +1,28 @@
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using Squidd.Runner.ConsoleApp.Config;
 
 namespace Squidd.Runner.ConsoleApp
 {
     internal class PowerShellRunner
     {
+        private readonly IApplicationSettings settings;
+
+        public PowerShellRunner(IApplicationSettings settings)
+        {
+            this.settings = settings;
+        }
+
         public event PowershellOutputEvent OnOutput;
 
         public void RunScript(string script)
         {
-            using (var instance = PowerShell.Create())
+            var workingDirectory = Path.Combine(settings.GetTemporaryDirectoryPath(), "work");
+            Directory.CreateDirectory(workingDirectory);
+            using (var instance = PowerShell.Create(RunspaceMode.NewRunspace))
             {
+                instance.Runspace.SessionStateProxy.Path.SetLocation(workingDirectory);
                 instance.AddScript(script);
                 var outputCollection = new PSDataCollection<PSObject>();
                 outputCollection.DataAdded += OnDataAdded;

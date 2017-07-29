@@ -1,15 +1,14 @@
-using System.Net.Sockets;
-using System.Text;
+using System.IO;
 
 namespace Squidd.Runner.ConsoleApp
 {
     internal class SocketCommunicationService
     {
-        private readonly Socket socket;
+        private readonly BinaryWriter writer;
 
-        internal SocketCommunicationService(Socket socket)
+        internal SocketCommunicationService(BinaryWriter writer)
         {
-            this.socket = socket;
+            this.writer = writer;
         }
 
         public void SubscribeToOutputOf(PowerShellRunner powerShellRunner)
@@ -19,7 +18,7 @@ namespace Squidd.Runner.ConsoleApp
 
         private void OnOutput(object sender, PowershellOutputEventArgs args)
         {
-            socket.Send(Encoding.UTF8.GetBytes($"{args.LineNumber}: {args.Message}\n"));
+            writer.Write($"{args.LineNumber}: {args.Message}\n");
         }
     }
 }

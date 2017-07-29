@@ -1,4 +1,4 @@
-using System.Net.Sockets;
+using System.IO;
 
 namespace Squidd.Runner.ConsoleApp.Responders
 {
@@ -6,6 +6,8 @@ namespace Squidd.Runner.ConsoleApp.Responders
     {
         bool RespondsToHeader(string header);
 
-        void Process(byte[] data, Socket socket);
+        void Process(byte[] data, BinaryWriter writer);
+
+        bool MakesBusy { get; }
     }
 }

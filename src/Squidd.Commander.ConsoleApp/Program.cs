@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Squidd.Commander.ConsoleApp
 {
@@ -17,10 +18,18 @@ namespace Squidd.Commander.ConsoleApp
             var easySender = new EasySender(IpAddress, Port);
 
             easySender.Send("INFO");
+            easySender.Send("STOR", new byte[0]);
+
+            easySender.Send("UNSP");
+
+            Task.Run(() => easySender.Send("PS", "Start-Sleep -s 10"));
+            Thread.Sleep(1000);
+            easySender.Send("INFO");
+
 
             while (true)
             {
-                var header = "PS  ";
+                var header = "PS";
                 var payload = @"Function Get-Fib ($n) {
      $current = $previous = 1;
      while ($current -lt $n) {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,61 +12,91 @@ namespace Squidd.Runner.ConsoleApp
 {
     internal class RunManager
     {
-        readonly List<IResponder> responders;
+        readonly List<IResponder> allResponders;
 
         public RunManager()
         {
-            responders = new List<IResponder>();
+            allResponders = new List<IResponder>();
         }
 
         public void AddResponder(IResponder responder)
         {
-            responders.Add(responder);
+            allResponders.Add(responder);
         }
 
-        public async void ListenAsync(IPAddress ipAddress, int port)
+        public void Listen(IPAddress ipAddress, int port)
         {
             var listener = new TcpListener(ipAddress, port);
             listener.Start();
             while (true)
             {
-                var socket = listener.AcceptSocket();
+                var client = listener.AcceptTcpClient();
                 Console.WriteLine("Connection accepted.");
-
-                await Task.Run(() =>
-                {
-                    var rawHeader = new byte[4];
-                    socket.Receive(rawHeader, 4, SocketFlags.None);
-                    var header = Encoding.UTF8.GetString(rawHeader);
-
-                    byte[] allData = null;
-                    foreach (var responder in responders.Where(r => r.RespondsToHeader(header)))
-                    {
-                        allData = allData ?? ReceiveAll(socket);
-                        responder.Process(allData, socket);
-                    }
-                    
-                    socket.Close();
-                });
+                Task.Run(() => { HandleConnection(client); });
             }
         }
 
-        private static byte[] ReceiveAll(Socket socket)
+        private void HandleConnection(TcpClient client)
         {
-            var buffer = new List<byte>();
-
-            while (socket.Available > 0)
+            List<IResponder> responders;
+            byte[] allData;
+            using (var dataReader = new BinaryReader(client.GetStream(), Encoding.UTF8, true))
             {
-                var currByte = new byte[socket.ReceiveBufferSize];
-                var byteCounter = socket.Receive(currByte, socket.ReceiveBufferSize, SocketFlags.None);
+                var header = dataReader.ReadString();
+                Console.WriteLine($"Received {header} command.");
 
-                if (byteCounter > 0)
+                responders = allResponders.Where(r => r.RespondsToHeader(header)).ToList();
+
+                if (!responders.Any())
                 {
-                    buffer.AddRange(currByte.Take(byteCounter));
+                    RespondWithNotSupported(client, header);
+                    return;
+                }
+
+                var payloadSize = Convert.ToInt32(dataReader.ReadUInt32());
+                allData = dataReader.ReadBytes(payloadSize);
+            }
+
+            using (var dataWriter = new BinaryWriter(client.GetStream(), Encoding.UTF8, true))
+            {
+                if (responders.Any(r => r.MakesBusy))
+                {
+                    if (Global.IsBusy || !Global.SetBusy())
+                    {
+                        RespondWithBusy(client, dataWriter);
+                        return;
+                    }
+                }
+
+                foreach (var responder in responders)
+                {
+                    responder.Process(allData, dataWriter);
                 }
             }
 
-            return buffer.ToArray();
+            if (responders.Any(r => r.MakesBusy))
+            {
+                Global.ClearBusy();
+            }
+
+            client.Close();
+        }
+
+        private static void RespondWithBusy(TcpClient client, BinaryWriter dataWriter)
+        {
+            dataWriter.Write("EROR");
+            dataWriter.Write("Runner is busy.");
+            client.Close();
+        }
+
+        private static void RespondWithNotSupported(TcpClient client, string header)
+        {
+            using (var dataWriter = new BinaryWriter(client.GetStream(), Encoding.UTF8, true))
+            {
+                dataWriter.Write("EROR");
+                dataWriter.Write($"Header not supported: {header}.");
+            }
+            client.Close();
         }
     }
 }

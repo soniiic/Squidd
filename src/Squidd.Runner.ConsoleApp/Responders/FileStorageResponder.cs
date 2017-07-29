@@ -36,6 +36,8 @@ namespace Squidd.Runner.ConsoleApp.Responders
             }
         }
 
+        public bool MakesBusy => true;
+
         private string GetFullPath(string fileId)
         {
             var directoryPath = settings.GetTemporaryDirectoryPath();

@@ -7,5 +7,7 @@ namespace Squidd.Runner.ConsoleApp.Responders
         bool RespondsToHeader(string header);
 
         void Process(byte[] data, Socket socket);
+
+        bool MakesBusy { get; }
     }
 }

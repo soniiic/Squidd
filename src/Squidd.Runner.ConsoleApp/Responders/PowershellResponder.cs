@@ -26,5 +26,7 @@ namespace Squidd.Runner.ConsoleApp.Responders
             communicationService.SubscribeToOutputOf(powerShellRunner);
             powerShellRunner.RunScript(script);
         }
+
+        public bool MakesBusy => true;
     }
 }

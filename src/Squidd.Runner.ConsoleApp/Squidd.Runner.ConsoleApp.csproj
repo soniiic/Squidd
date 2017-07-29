@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\ApplicationSettings.cs" />
+    <Compile Include="Global.cs" />
     <Compile Include="Responders\FileStorageResponder.cs" />
     <Compile Include="Config\IApplicationSettings.cs" />
     <Compile Include="Responders\InfoResponder.cs" />

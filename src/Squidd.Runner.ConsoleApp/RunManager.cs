@@ -11,16 +11,16 @@ namespace Squidd.Runner.ConsoleApp
 {
     internal class RunManager
     {
-        readonly List<IResponder> responders;
+        readonly List<IResponder> allResponders;
 
         public RunManager()
         {
-            responders = new List<IResponder>();
+            allResponders = new List<IResponder>();
         }
 
         public void AddResponder(IResponder responder)
         {
-            responders.Add(responder);
+            allResponders.Add(responder);
         }
 
         public async void ListenAsync(IPAddress ipAddress, int port)
@@ -39,10 +39,21 @@ namespace Squidd.Runner.ConsoleApp
                     var header = Encoding.UTF8.GetString(rawHeader);
 
                     byte[] allData = null;
-                    foreach (var responder in responders.Where(r => r.RespondsToHeader(header)))
+                    var responders = allResponders.Where(r => r.RespondsToHeader(header));
+                    if (responders.Any(r => r.MakesBusy))
+                    {
+                        Global.IsBusy = true;
+                    }
+
+                    foreach (var responder in responders)
                     {
                         allData = allData ?? ReceiveAll(socket);
                         responder.Process(allData, socket);
+                    }
+
+                    if (responders.Any(r => r.MakesBusy))
+                    {
+                        Global.IsBusy = false;
                     }
 
                     socket.Close();
@@ -54,7 +65,7 @@ namespace Squidd.Runner.ConsoleApp
         {
             var buffer = new List<byte>();
 
-            while (Encoding.ASCII.GetString(buffer.Skip(buffer.Count-9).Take(9).ToArray()) != "SQUIDDEND")
+            while (Encoding.ASCII.GetString(buffer.Skip(buffer.Count - 9).Take(9).ToArray()) != "SQUIDDEND")
             {
                 var currByte = new byte[socket.ReceiveBufferSize];
                 var byteCounter = socket.Receive(currByte, socket.ReceiveBufferSize, SocketFlags.None);
@@ -65,7 +76,7 @@ namespace Squidd.Runner.ConsoleApp
                 }
             }
 
-            return buffer.Take(buffer.Count-9).ToArray();
+            return buffer.Take(buffer.Count - 9).ToArray();
         }
     }
 }

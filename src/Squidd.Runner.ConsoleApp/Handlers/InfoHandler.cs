@@ -7,16 +7,16 @@ using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Squidd.Runner.ConsoleApp.Responders
+namespace Squidd.Runner.ConsoleApp.Handlers
 {
-    class InfoResponder : IResponder
+    class InfoHandler : IHandler
     {
         public bool RespondsToHeader(string header)
         {
             return header == "INFO";
         }
 
-        public void Process(byte[] data, BinaryWriter writer)
+        public void Process(byte[] data, StreamResponder responder)
         {
             dynamic info = new ExpandoObject();
             info.Name = Environment.MachineName;
@@ -25,7 +25,7 @@ namespace Squidd.Runner.ConsoleApp.Responders
             info.Bits = Environment.Is64BitOperatingSystem ? 64 : 32;
             info.IsBusy = Global.IsBusy;
 
-            writer.Write(JsonConvert.SerializeObject(info) + "\n");
+            responder.Log(JsonConvert.SerializeObject(info));
         }
 
         public bool MakesBusy => false;

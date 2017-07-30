@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using Squidd.Runner.ConsoleApp.Config;
-using Squidd.Runner.ConsoleApp.Responders;
+using Squidd.Runner.ConsoleApp.Handlers;
 
 namespace Squidd.Runner.ConsoleApp
 {
@@ -17,9 +17,9 @@ namespace Squidd.Runner.ConsoleApp
             var runManager = new RunManager();
             var applicationSettings = new ApplicationSettings();
 
-            runManager.AddResponder(new FileStorageResponder(applicationSettings));
-            runManager.AddResponder(new InfoResponder());
-            runManager.AddResponder(new PowershellResponder(applicationSettings));
+            runManager.AddHandler(new FileStorageHandler(applicationSettings));
+            runManager.AddHandler(new InfoHandler());
+            runManager.AddHandler(new PowershellHandler(applicationSettings));
             runManager.Listen(IPAddress.Parse(IpAddress), Port);
             Console.WriteLine("Initialised!");
             Console.WriteLine("Press enter to close");

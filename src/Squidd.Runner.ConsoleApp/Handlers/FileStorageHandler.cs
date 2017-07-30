@@ -4,13 +4,13 @@ using System.Net.Sockets;
 using System.Text;
 using Squidd.Runner.ConsoleApp.Config;
 
-namespace Squidd.Runner.ConsoleApp.Responders
+namespace Squidd.Runner.ConsoleApp.Handlers
 {
-    internal class FileStorageResponder : IResponder
+    internal class FileStorageHandler : IHandler
     {
         private readonly IApplicationSettings settings;
 
-        public FileStorageResponder(IApplicationSettings settings)
+        public FileStorageHandler(IApplicationSettings settings)
         {
             this.settings = settings;
         }
@@ -20,19 +20,18 @@ namespace Squidd.Runner.ConsoleApp.Responders
             return header == "STOR";
         }
 
-        public void Process(byte[] data, BinaryWriter writer)
+        public void Process(byte[] data, StreamResponder responder)
         {
             var fileId = Guid.NewGuid().ToString();
             var fullPath = GetFullPath(fileId);
             try
             {
                 File.WriteAllBytes(fullPath, data);
-                writer.Write(fileId + "\n");
+                responder.Log(fileId);
             }
             catch (Exception e)
             {
-                writer.Write("EROR");
-                writer.Write(e.Message + "\n");
+                responder.Error(e.Message);
             }
         }
 

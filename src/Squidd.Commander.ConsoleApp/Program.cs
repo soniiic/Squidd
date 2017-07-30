@@ -17,31 +17,46 @@ namespace Squidd.Commander.ConsoleApp
 
             var easySender = new EasySender(IpAddress, Port);
 
-            easySender.Send("INFO");
-            easySender.Send("STOR", new byte[0]);
-
-            easySender.Send("UNSP");
-
-            Task.Run(() => easySender.Send("PS", "Start-Sleep -s 10"));
-            Thread.Sleep(1000);
-            easySender.Send("INFO");
-
+            Console.WriteLine("1 INFO");
+            Console.WriteLine("2 STOR (empty file)");
+            Console.WriteLine("3 UNSP");
+            Console.WriteLine("4 PS (fib)");
+            Console.WriteLine("5 PS (delay)");
 
             while (true)
             {
-                var header = "PS";
-                var payload = @"Function Get-Fib ($n) {
+                switch (Console.ReadKey().KeyChar)
+                {
+                    case '1':
+                        easySender.Send("INFO");
+                        break;
+                    case '2':
+                        easySender.Send("STOR", new byte[0]);
+                        break;
+                    case '3':
+                        easySender.Send("UNSP");
+                        break;
+                    case '4':
+                        easySender.Send("PS", Fibonacci);
+                        break;
+                    case '5':
+                        easySender.Send("PS", Sleep);
+                        break;
+                    default:
+                        continue;
+
+                }
+            }
+        }
+
+        public const string Sleep = @"Start-Sleep -s 10";
+
+        public const string Fibonacci = @"Function Get-Fib ($n) {
      $current = $previous = 1;
      while ($current -lt $n) {
            $current;
            $current,$previous = ($current + $previous),$current}
      }
 Get-Fib 100";
-
-                easySender.Send(header, payload);
-                Console.WriteLine("Press enter to send again...");
-                Console.ReadLine();
-            }
-        }
     }
 }

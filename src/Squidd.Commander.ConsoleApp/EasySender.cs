@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Squidd.Commander.ConsoleApp.Extensions;
 
 namespace Squidd.Commander.ConsoleApp
@@ -20,16 +21,17 @@ namespace Squidd.Commander.ConsoleApp
 
         public void Send(string header, byte[] payload = null)
         {
-            var client = new TcpClient(ipAddress, port);
-            var stream = client.GetStream();
-            Console.WriteLine();
-            Console.WriteLine($"Sending {header} command...");
-            WriteCommand(header, payload, stream);
-            Console.WriteLine("Waiting for response...");
-
-            ReadResponse(stream, client);
-
-            client.Close();
+            Task.Run(() =>
+            {
+                var client = new TcpClient(ipAddress, port);
+                var stream = client.GetStream();
+                Console.WriteLine();
+                Console.WriteLine($"Sending {header} command...");
+                WriteCommand(header, payload, stream);
+                Console.WriteLine("Waiting for response...");
+                ReadResponse(stream, client);
+                client.Close();
+            });
         }
 
         private static void WriteCommand(string header, byte[] payload, NetworkStream stream)

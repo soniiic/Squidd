@@ -25,7 +25,7 @@ namespace Squidd.Runner.ConsoleApp.Responders
             info.Bits = Environment.Is64BitOperatingSystem ? 64 : 32;
             info.IsBusy = Global.IsBusy;
 
-            writer.Write(JsonConvert.SerializeObject(info));
+            writer.Write(JsonConvert.SerializeObject(info) + "\n");
         }
 
         public bool MakesBusy => false;

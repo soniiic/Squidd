@@ -27,12 +27,12 @@ namespace Squidd.Runner.ConsoleApp.Responders
             try
             {
                 File.WriteAllBytes(fullPath, data);
-                writer.Write(fileId);
+                writer.Write(fileId + "\n");
             }
             catch (Exception e)
             {
                 writer.Write("EROR");
-                writer.Write(e.Message);
+                writer.Write(e.Message + "\n");
             }
         }
 

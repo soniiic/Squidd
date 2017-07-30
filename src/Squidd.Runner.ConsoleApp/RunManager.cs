@@ -85,7 +85,7 @@ namespace Squidd.Runner.ConsoleApp
         private static void RespondWithBusy(TcpClient client, BinaryWriter dataWriter)
         {
             dataWriter.Write("EROR");
-            dataWriter.Write("Runner is busy.");
+            dataWriter.Write("Runner is busy.\n");
             client.Close();
         }
 
@@ -94,7 +94,7 @@ namespace Squidd.Runner.ConsoleApp
             using (var dataWriter = new BinaryWriter(client.GetStream(), Encoding.UTF8, true))
             {
                 dataWriter.Write("EROR");
-                dataWriter.Write($"Header not supported: {header}.");
+                dataWriter.Write($"Header not supported: {header}.\n");
             }
             client.Close();
         }

@@ -72,7 +72,6 @@ namespace Squidd.Commander.ConsoleApp
                 {
                     try
                     {
-                        reader.BaseStream.ReadTimeout = (int) TimeSpan.FromSeconds(30).TotalMilliseconds;
                         var rawHeader = reader.ReadString();
 
                         dynamic header = JsonConvert.DeserializeObject<ExpandoObject>(rawHeader);
@@ -98,7 +97,7 @@ namespace Squidd.Commander.ConsoleApp
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch
                     {
                         // ignored
                     }

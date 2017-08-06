@@ -41,5 +41,7 @@ namespace Squidd.Runner.ConsoleApp.Handlers
         }
 
         public bool MakesBusy => false;
+
+        public bool RequiresAuthentication => false;
     }
 }

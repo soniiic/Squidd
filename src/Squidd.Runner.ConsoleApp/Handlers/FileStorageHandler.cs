@@ -37,6 +37,8 @@ namespace Squidd.Runner.ConsoleApp.Handlers
 
         public bool MakesBusy => true;
 
+        public bool RequiresAuthentication => true;
+
         private string GetFullPath(string fileId)
         {
             var directoryPath = settings.GetTemporaryDirectoryPath();

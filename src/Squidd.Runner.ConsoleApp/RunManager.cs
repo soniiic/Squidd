@@ -47,15 +47,17 @@ namespace Squidd.Runner.ConsoleApp
                 dynamic header = JsonConvert.DeserializeObject<ExpandoObject>(dataReader.ReadString());
                 Console.WriteLine($"Received {header.Method} command.");
 
-                handlers = allHandlers.Where(r => r.RespondsToMethod(header.Method)).ToList();
+                var isAuthenticated = header.Token != null && new Guid(header.Token) == Global.PairId;
+
+                handlers = allHandlers.Where(r => r.RespondsToMethod(header.Method) && (!r.RequiresAuthentication || r.RequiresAuthentication == isAuthenticated)).ToList();
 
                 if (!handlers.Any())
                 {
                     using (var responder = new StreamResponder(client.GetStream()))
                     {
-                        responder.Log($"Method not supported: {header.Method}.");
+                        responder.Error($"Method not supported: {header.Method} or you are not paired.");
                     }
-                    client.Close();
+                    client.Client.Shutdown(SocketShutdown.Send);
                     return;
                 }
 
@@ -69,7 +71,7 @@ namespace Squidd.Runner.ConsoleApp
                     if (Global.IsBusy || !Global.SetBusy())
                     {
                         responder.Error("Runner is busy");
-                        client.Close();
+                        client.Client.Shutdown(SocketShutdown.Send);
                         return;
                     }
                 }
@@ -85,7 +87,7 @@ namespace Squidd.Runner.ConsoleApp
                 Global.ClearBusy();
             }
 
-            client.Close();
+            client.Client.Shutdown(SocketShutdown.Send);
         }
     }
 }

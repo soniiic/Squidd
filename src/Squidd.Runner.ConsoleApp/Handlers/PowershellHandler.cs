@@ -14,9 +14,9 @@ namespace Squidd.Runner.ConsoleApp.Handlers
             this.settings = settings;
         }
 
-        public bool RespondsToHeader(string header)
+        public bool RespondsToMethod(string method)
         {
-            return header == "PS";
+            return method == "PS";
         }
 
         public void Process(byte[] data, StreamResponder responder)
@@ -26,6 +26,7 @@ namespace Squidd.Runner.ConsoleApp.Handlers
             var communicationService = new SocketCommunicationService(responder);
             communicationService.SubscribeToOutputOf(powerShellRunner);
             powerShellRunner.RunScript(script);
+            responder.Internal("SC", "Script complete");
         }
 
         public bool MakesBusy => true;

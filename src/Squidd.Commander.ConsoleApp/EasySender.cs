@@ -1,9 +1,11 @@
 using System;
+using System.Dynamic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Squidd.Commander.ConsoleApp.Extensions;
 
 namespace Squidd.Commander.ConsoleApp
@@ -19,32 +21,40 @@ namespace Squidd.Commander.ConsoleApp
             this.port = port;
         }
 
-        public void Send(string header, byte[] payload = null)
+        public void Send(string method, byte[] payload = null)
         {
             Task.Run(() =>
             {
                 var client = new TcpClient(ipAddress, port);
                 var stream = client.GetStream();
                 Console.WriteLine();
-                Console.WriteLine($"Sending {header} command...");
-                WriteCommand(header, payload, stream);
+                Console.WriteLine($"Sending {method} command...");
+                WriteCommand(method, payload ?? new byte[0], stream);
                 Console.WriteLine("Waiting for response...");
                 ReadResponse(stream, client);
                 client.Close();
             });
         }
 
-        private static void WriteCommand(string header, byte[] payload, NetworkStream stream)
+        private void WriteCommand(string method, byte[] payload, NetworkStream stream)
         {
+            payload = payload ?? throw new ArgumentNullException(nameof(payload));
+
             using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
             {
-                writer.Write(header);
+                var header = new
+                {
+                    Method = method,
+                    PayloadLength = payload.Length,
+                    Token = this.Token
+                };
 
-                payload = payload ?? new byte[0];
-                var payLoadLength = BitConverter.GetBytes(Convert.ToUInt32(payload.Length));
+                var jsonHeader = JsonConvert.SerializeObject(header);
+
+                writer.Write(jsonHeader);
+
                 try
                 {
-                    writer.Write(payLoadLength);
                     writer.Write(payload);
                 }
                 catch
@@ -54,7 +64,7 @@ namespace Squidd.Commander.ConsoleApp
             }
         }
 
-        private static void ReadResponse(NetworkStream stream, TcpClient client)
+        private void ReadResponse(NetworkStream stream, TcpClient client)
         {
             using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
             {
@@ -62,9 +72,33 @@ namespace Squidd.Commander.ConsoleApp
                 {
                     try
                     {
-                        Console.Write(reader.ReadString());
+                        reader.BaseStream.ReadTimeout = (int) TimeSpan.FromSeconds(30).TotalMilliseconds;
+                        var rawHeader = reader.ReadString();
+
+                        dynamic header = JsonConvert.DeserializeObject<ExpandoObject>(rawHeader);
+
+                        var responseBody = Encoding.UTF8.GetString(reader.ReadBytes((int) header.ContentLength));
+
+                        if (header.Type == "LOG" || header.Type == "EROR")
+                        {
+                            Console.WriteLine(header.Type);
+                            Console.WriteLine(responseBody);
+                        }
+
+                        if (header.Type == "INT")
+                        {
+                            if (header.SubType == "TOK")
+                            {
+                                this.Token = responseBody;
+                                Console.WriteLine("Token stored!");
+                            }
+                            else
+                            {
+                                Console.WriteLine(responseBody);
+                            }
+                        }
                     }
-                    catch
+                    catch (Exception e)
                     {
                         // ignored
                     }
@@ -72,10 +106,12 @@ namespace Squidd.Commander.ConsoleApp
             }
         }
 
-        public void Send(string header, string payload)
+        public string Token { get; set; }
+
+        public void Send(string method, string payload)
         {
             var bytes = Encoding.UTF8.GetBytes(payload ?? string.Empty);
-            Send(header, bytes);
+            Send(method, bytes);
         }
     }
 }

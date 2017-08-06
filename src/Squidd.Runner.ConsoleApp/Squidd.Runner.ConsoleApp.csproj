@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Config\ApplicationSettings.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="Handlers\PairHandler.cs" />
     <Compile Include="Handlers\FileStorageHandler.cs" />
     <Compile Include="Config\IApplicationSettings.cs" />
     <Compile Include="Handlers\InfoHandler.cs" />
@@ -77,6 +78,12 @@
     <None Include="settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Squidd.Shared\Squidd.Shared.csproj">
+      <Project>{62b3c2f4-2cbb-4e80-8b99-57d731ebb43b}</Project>
+      <Name>Squidd.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

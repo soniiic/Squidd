@@ -15,9 +15,9 @@ namespace Squidd.Runner.ConsoleApp.Handlers
             this.settings = settings;
         }
 
-        public bool RespondsToHeader(string header)
+        public bool RespondsToMethod(string method)
         {
-            return header == "STOR";
+            return method == "STOR";
         }
 
         public void Process(byte[] data, StreamResponder responder)

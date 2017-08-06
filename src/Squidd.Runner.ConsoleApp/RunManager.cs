@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Squidd.Runner.ConsoleApp.Handlers;
 
 namespace Squidd.Runner.ConsoleApp
@@ -42,23 +44,22 @@ namespace Squidd.Runner.ConsoleApp
             byte[] allData;
             using (var dataReader = new BinaryReader(client.GetStream(), Encoding.UTF8, true))
             {
-                var header = dataReader.ReadString();
-                Console.WriteLine($"Received {header} command.");
+                dynamic header = JsonConvert.DeserializeObject<ExpandoObject>(dataReader.ReadString());
+                Console.WriteLine($"Received {header.Method} command.");
 
-                handlers = allHandlers.Where(r => r.RespondsToHeader(header)).ToList();
+                handlers = allHandlers.Where(r => r.RespondsToMethod(header.Method)).ToList();
 
                 if (!handlers.Any())
                 {
                     using (var responder = new StreamResponder(client.GetStream()))
                     {
-                        responder.Log($"Header not supported: {header}.");
+                        responder.Log($"Method not supported: {header.Method}.");
                     }
                     client.Close();
                     return;
                 }
 
-                var payloadSize = Convert.ToInt32(dataReader.ReadUInt32());
-                allData = dataReader.ReadBytes(payloadSize);
+                allData = dataReader.ReadBytes((int)header.PayloadLength);
             }
 
             using (var responder = new StreamResponder(client.GetStream()))

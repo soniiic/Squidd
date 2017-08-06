@@ -1,10 +1,8 @@
-using System.IO;
-
 namespace Squidd.Runner.ConsoleApp.Handlers
 {
     internal interface IHandler
     {
-        bool RespondsToHeader(string header);
+        bool RespondsToMethod(string method);
 
         void Process(byte[] data, StreamResponder responder);
 

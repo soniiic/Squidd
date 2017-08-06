@@ -11,9 +11,9 @@ namespace Squidd.Runner.ConsoleApp.Handlers
 {
     class InfoHandler : IHandler
     {
-        public bool RespondsToHeader(string header)
+        public bool RespondsToMethod(string method)
         {
-            return header == "INFO";
+            return method == "INFO";
         }
 
         public void Process(byte[] data, StreamResponder responder)
@@ -25,7 +25,7 @@ namespace Squidd.Runner.ConsoleApp.Handlers
             info.Bits = Environment.Is64BitOperatingSystem ? 64 : 32;
             info.IsBusy = Global.IsBusy;
 
-            responder.Log(JsonConvert.SerializeObject(info));
+            responder.Internal("INFO", JsonConvert.SerializeObject(info));
         }
 
         public bool MakesBusy => false;

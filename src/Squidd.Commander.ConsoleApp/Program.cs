@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Squidd.Shared.Models;
 
 namespace Squidd.Commander.ConsoleApp
 {
@@ -22,6 +24,8 @@ namespace Squidd.Commander.ConsoleApp
             Console.WriteLine("3 UNSP");
             Console.WriteLine("4 PS (fib)");
             Console.WriteLine("5 PS (delay)");
+            Console.WriteLine("6 PAIR (valid)");
+            Console.WriteLine("7 PAIR (invalid)");
 
             while (true)
             {
@@ -42,11 +46,35 @@ namespace Squidd.Commander.ConsoleApp
                     case '5':
                         easySender.Send("PS", Sleep);
                         break;
+                    case '6':
+                        easySender.Send("PAIR", ValidAuth());
+                        break;
+                    case '7':
+                        easySender.Send("PAIR", InvalidAuth());
+                        break;
                     default:
                         continue;
 
                 }
             }
+        }
+
+        private static string ValidAuth()
+        {
+            return JsonConvert.SerializeObject(new AuthenticationInputModel()
+            {
+                Username = "admin",
+                Password = "password"
+            });
+        }
+
+        private static string InvalidAuth()
+        {
+            return JsonConvert.SerializeObject(new AuthenticationInputModel()
+            {
+                Username = "invalid",
+                Password = "credentials"
+            });
         }
 
         public const string Sleep = @"Start-Sleep -s 10";

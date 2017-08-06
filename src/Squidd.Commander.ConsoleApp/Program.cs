@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Squidd.Shared.Models;
 
 namespace Squidd.Commander.ConsoleApp
 {
@@ -17,31 +19,72 @@ namespace Squidd.Commander.ConsoleApp
 
             var easySender = new EasySender(IpAddress, Port);
 
-            easySender.Send("INFO");
-            easySender.Send("STOR", new byte[0]);
-
-            easySender.Send("UNSP");
-
-            Task.Run(() => easySender.Send("PS", "Start-Sleep -s 10"));
-            Thread.Sleep(1000);
-            easySender.Send("INFO");
-
+            Console.WriteLine("1 INFO");
+            Console.WriteLine("2 STOR (empty file)");
+            Console.WriteLine("3 UNSP");
+            Console.WriteLine("4 PS (fib)");
+            Console.WriteLine("5 PS (delay)");
+            Console.WriteLine("6 PAIR (valid)");
+            Console.WriteLine("7 PAIR (invalid)");
 
             while (true)
             {
-                var header = "PS";
-                var payload = @"Function Get-Fib ($n) {
+                switch (Console.ReadKey().KeyChar)
+                {
+                    case '1':
+                        easySender.Send("INFO");
+                        break;
+                    case '2':
+                        easySender.Send("STOR", new byte[0]);
+                        break;
+                    case '3':
+                        easySender.Send("UNSP");
+                        break;
+                    case '4':
+                        easySender.Send("PS", Fibonacci);
+                        break;
+                    case '5':
+                        easySender.Send("PS", Sleep);
+                        break;
+                    case '6':
+                        easySender.Send("PAIR", ValidAuth());
+                        break;
+                    case '7':
+                        easySender.Send("PAIR", InvalidAuth());
+                        break;
+                    default:
+                        continue;
+
+                }
+            }
+        }
+
+        private static string ValidAuth()
+        {
+            return JsonConvert.SerializeObject(new AuthenticationInputModel()
+            {
+                Username = "admin",
+                Password = "password"
+            });
+        }
+
+        private static string InvalidAuth()
+        {
+            return JsonConvert.SerializeObject(new AuthenticationInputModel()
+            {
+                Username = "invalid",
+                Password = "credentials"
+            });
+        }
+
+        public const string Sleep = @"Start-Sleep -s 10";
+
+        public const string Fibonacci = @"Function Get-Fib ($n) {
      $current = $previous = 1;
      while ($current -lt $n) {
            $current;
            $current,$previous = ($current + $previous),$current}
      }
 Get-Fib 100";
-
-                easySender.Send(header, payload);
-                Console.WriteLine("Press enter to send again...");
-                Console.ReadLine();
-            }
-        }
     }
 }

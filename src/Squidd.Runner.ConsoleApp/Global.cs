@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Squidd.Runner.ConsoleApp
 {
@@ -11,6 +7,8 @@ namespace Squidd.Runner.ConsoleApp
         private static readonly object BusyLocker = new object();
 
         public static bool IsBusy { get; private set; }
+
+        public static Guid PairId { get; set; }
 
         public static bool SetBusy()
         {

@@ -3,31 +3,34 @@ using System.Net.Sockets;
 using System.Text;
 using Squidd.Runner.ConsoleApp.Config;
 
-namespace Squidd.Runner.ConsoleApp.Responders
+namespace Squidd.Runner.ConsoleApp.Handlers
 {
-    class PowershellResponder : IResponder
+    class PowershellHandler : IHandler
     {
         private readonly IApplicationSettings settings;
 
-        public PowershellResponder(IApplicationSettings settings)
+        public PowershellHandler(IApplicationSettings settings)
         {
             this.settings = settings;
         }
 
-        public bool RespondsToHeader(string header)
+        public bool RespondsToMethod(string method)
         {
-            return header == "PS";
+            return method == "PS";
         }
 
-        public void Process(byte[] data, BinaryWriter writer)
+        public void Process(byte[] data, StreamResponder responder)
         {
             var script = Encoding.UTF8.GetString(data);
             var powerShellRunner = new PowerShellRunner(settings);
-            var communicationService = new SocketCommunicationService(writer);
+            var communicationService = new SocketCommunicationService(responder);
             communicationService.SubscribeToOutputOf(powerShellRunner);
             powerShellRunner.RunScript(script);
+            responder.Internal("SC", "Script complete");
         }
 
         public bool MakesBusy => true;
+
+        public bool RequiresAuthentication => true;
     }
 }

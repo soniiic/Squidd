@@ -4,39 +4,40 @@ using System.Net.Sockets;
 using System.Text;
 using Squidd.Runner.ConsoleApp.Config;
 
-namespace Squidd.Runner.ConsoleApp.Responders
+namespace Squidd.Runner.ConsoleApp.Handlers
 {
-    internal class FileStorageResponder : IResponder
+    internal class FileStorageHandler : IHandler
     {
         private readonly IApplicationSettings settings;
 
-        public FileStorageResponder(IApplicationSettings settings)
+        public FileStorageHandler(IApplicationSettings settings)
         {
             this.settings = settings;
         }
 
-        public bool RespondsToHeader(string header)
+        public bool RespondsToMethod(string method)
         {
-            return header == "STOR";
+            return method == "STOR";
         }
 
-        public void Process(byte[] data, BinaryWriter writer)
+        public void Process(byte[] data, StreamResponder responder)
         {
             var fileId = Guid.NewGuid().ToString();
             var fullPath = GetFullPath(fileId);
             try
             {
                 File.WriteAllBytes(fullPath, data);
-                writer.Write(fileId);
+                responder.Log(fileId);
             }
             catch (Exception e)
             {
-                writer.Write("EROR");
-                writer.Write(e.Message);
+                responder.Error(e.Message);
             }
         }
 
         public bool MakesBusy => true;
+
+        public bool RequiresAuthentication => true;
 
         private string GetFullPath(string fileId)
         {

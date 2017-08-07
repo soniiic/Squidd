@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Squidd.Shared.Models;
 
-namespace Squidd.Runner.ConsoleApp.Handlers
+namespace Squidd.Runner.Handlers
 {
-    class PairHandler : IHandler
+    public class PairHandler : IHandler
     {
         public bool RespondsToMethod(string method)
         {
@@ -19,8 +19,9 @@ namespace Squidd.Runner.ConsoleApp.Handlers
             if (Authenticate(model.Username, model.Password))
             {
                 Global.PairId = Guid.NewGuid();
-                var token = JToken.FromObject(Global.PairId);
-                responder.Internal("TOK", token.ToString());
+
+                // todo make this an actual token rather than GUID
+                responder.Internal("TOK", Global.PairId.ToString());
             }
             else
             {

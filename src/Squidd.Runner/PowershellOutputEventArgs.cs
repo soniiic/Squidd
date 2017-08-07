@@ -1,4 +1,4 @@
-namespace Squidd.Runner.ConsoleApp
+namespace Squidd.Runner
 {
     internal class PowershellOutputEventArgs
     {

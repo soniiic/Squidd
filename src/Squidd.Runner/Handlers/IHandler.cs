@@ -1,6 +1,6 @@
-namespace Squidd.Runner.ConsoleApp.Handlers
+namespace Squidd.Runner.Handlers
 {
-    internal interface IHandler
+    public interface IHandler
     {
         bool RespondsToMethod(string method);
 

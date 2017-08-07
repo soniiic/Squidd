@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net;
+using Squidd.Runner.Config;
 using Squidd.Runner.ConsoleApp.Config;
-using Squidd.Runner.ConsoleApp.Handlers;
+using Squidd.Runner.Handlers;
 
 namespace Squidd.Runner.ConsoleApp
 {
@@ -14,7 +15,7 @@ namespace Squidd.Runner.ConsoleApp
         static void Main(string[] args)
         {
             Console.WriteLine("Initializing runner...");
-            var runManager = new RunManager();
+            var runManager = new Squidd.Runner.RunManager();
             var applicationSettings = new ApplicationSettings();
 
             runManager.AddHandler(new FileStorageHandler(applicationSettings));

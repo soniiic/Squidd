@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E9F72AA8-AD24-4F0C-8FE5-833DC565EB98}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Squidd.Runner.ConsoleApp</RootNamespace>
-    <AssemblyName>Squidd.Runner.ConsoleApp</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <ProjectGuid>{F323416F-80EF-4521-8ECD-E8690D96F9FD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Squidd.Runner</RootNamespace>
+    <AssemblyName>Squidd.Runner</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,10 +20,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -38,8 +35,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Management.Automation_PowerShell_3.0.6.3.9600.17400\lib\net40\System.Management.Automation.dll</HintPath>
       <Private>True</Private>
@@ -55,22 +50,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config\ApplicationSettings.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Config\IApplicationSettings.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Handlers\FileStorageHandler.cs" />
+    <Compile Include="Handlers\IHandler.cs" />
+    <Compile Include="Handlers\InfoHandler.cs" />
+    <Compile Include="Handlers\PairHandler.cs" />
+    <Compile Include="Handlers\PowershellHandler.cs" />
+    <Compile Include="PowershellOutputEventArgs.cs" />
+    <Compile Include="PowerShellRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RunManager.cs" />
+    <Compile Include="SocketCommunicationService.cs" />
+    <Compile Include="StreamResponder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="settings.json.default" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Squidd.Runner\Squidd.Runner.csproj">
-      <Project>{f323416f-80ef-4521-8ecd-e8690d96f9fd}</Project>
-      <Name>Squidd.Runner</Name>
+    <ProjectReference Include="..\Squidd.Shared\Squidd.Shared.csproj">
+      <Project>{62b3c2f4-2cbb-4e80-8b99-57d731ebb43b}</Project>
+      <Name>Squidd.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

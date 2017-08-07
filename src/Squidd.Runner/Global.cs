@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Squidd.Runner.ConsoleApp
+namespace Squidd.Runner
 {
     internal static class Global
     {

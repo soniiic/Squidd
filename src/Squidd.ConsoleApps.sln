@@ -7,7 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squidd.Runner.ConsoleApp", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squidd.Commander.ConsoleApp", "Squidd.Commander.ConsoleApp\Squidd.Commander.ConsoleApp.csproj", "{925FC036-C309-4560-9F5A-50BADBD03FB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squidd.Shared", "Squidd.Shared\Squidd.Shared.csproj", "{62B3C2F4-2CBB-4E80-8B99-57D731EBB43B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidd.Shared", "Squidd.Shared\Squidd.Shared.csproj", "{62B3C2F4-2CBB-4E80-8B99-57D731EBB43B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squidd.Runner", "Squidd.Runner\Squidd.Runner.csproj", "{F323416F-80EF-4521-8ECD-E8690D96F9FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{62B3C2F4-2CBB-4E80-8B99-57D731EBB43B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62B3C2F4-2CBB-4E80-8B99-57D731EBB43B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62B3C2F4-2CBB-4E80-8B99-57D731EBB43B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F323416F-80EF-4521-8ECD-E8690D96F9FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F323416F-80EF-4521-8ECD-E8690D96F9FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F323416F-80EF-4521-8ECD-E8690D96F9FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F323416F-80EF-4521-8ECD-E8690D96F9FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

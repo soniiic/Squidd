@@ -8,11 +8,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Squidd.Runner.ConsoleApp.Handlers;
+using Squidd.Runner.Handlers;
 
-namespace Squidd.Runner.ConsoleApp
+namespace Squidd.Runner
 {
-    internal class RunManager
+    public class RunManager
     {
         readonly List<IHandler> allHandlers;
 
@@ -26,15 +26,15 @@ namespace Squidd.Runner.ConsoleApp
             allHandlers.Add(handler);
         }
 
-        public void Listen(IPAddress ipAddress, int port)
+        public async Task Listen(IPAddress ipAddress, int port)
         {
             var listener = new TcpListener(ipAddress, port);
             listener.Start();
             while (true)
             {
-                var client = listener.AcceptTcpClient();
+                var client = await listener.AcceptTcpClientAsync();
                 Console.WriteLine("Connection accepted.");
-                Task.Run(() => { HandleConnection(client); });
+                await Task.Run(() => { HandleConnection(client); });
             }
         }
 

@@ -1,6 +1,7 @@
 using System.Dynamic;
 using System.IO;
 using Newtonsoft.Json;
+using Squidd.Runner.Config;
 
 namespace Squidd.Runner.ConsoleApp.Config
 {

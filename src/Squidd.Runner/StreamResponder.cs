@@ -4,11 +4,10 @@ using System.Dynamic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace Squidd.Runner.ConsoleApp
+namespace Squidd.Runner
 {
-    internal class StreamResponder : IDisposable
+    public class StreamResponder : IDisposable
     {
         private readonly BinaryWriter writer;
 

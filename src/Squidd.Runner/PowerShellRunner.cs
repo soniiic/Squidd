@@ -1,9 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using Squidd.Runner.ConsoleApp.Config;
+using Squidd.Runner.Config;
 
-namespace Squidd.Runner.ConsoleApp
+namespace Squidd.Runner
 {
     internal class PowerShellRunner
     {

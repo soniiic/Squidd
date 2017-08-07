@@ -1,15 +1,11 @@
 using System;
-using System.Diagnostics.Eventing.Reader;
 using System.Dynamic;
-using System.IO;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
 using Newtonsoft.Json;
 
-namespace Squidd.Runner.ConsoleApp.Handlers
+namespace Squidd.Runner.Handlers
 {
-    class InfoHandler : IHandler
+    public class InfoHandler : IHandler
     {
         public bool RespondsToMethod(string method)
         {

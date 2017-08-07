@@ -1,12 +1,10 @@
 using System;
 using System.IO;
-using System.Net.Sockets;
-using System.Text;
-using Squidd.Runner.ConsoleApp.Config;
+using Squidd.Runner.Config;
 
-namespace Squidd.Runner.ConsoleApp.Handlers
+namespace Squidd.Runner.Handlers
 {
-    internal class FileStorageHandler : IHandler
+    public class FileStorageHandler : IHandler
     {
         private readonly IApplicationSettings settings;
 

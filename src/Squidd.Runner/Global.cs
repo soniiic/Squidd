@@ -10,7 +10,9 @@ namespace Squidd.Runner
 
         public static Guid PairId { get; set; }
 
-        public static bool SetBusy()
+        public static Guid? SessionId { get; set; }
+
+        public static bool StartSession()
         {
             if (!IsBusy)
             {
@@ -19,6 +21,7 @@ namespace Squidd.Runner
                     if (!IsBusy)
                     {
                         IsBusy = true;
+                        SessionId = Guid.NewGuid();
                         return true;
                     }
                 }
@@ -27,9 +30,10 @@ namespace Squidd.Runner
             return false;
         }
 
-        public static void ClearBusy()
+        public static void EndSession()
         {
             IsBusy = false;
+            SessionId = null;
         }
     }
 }

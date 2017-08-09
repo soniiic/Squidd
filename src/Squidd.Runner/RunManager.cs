@@ -8,57 +8,50 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Squidd.Runner.Config;
 using Squidd.Runner.Handlers;
+using Squidd.Runner.Helpers;
+using Squidd.Runner.Middleware;
 
 namespace Squidd.Runner
 {
     public class RunManager
     {
-        readonly List<IHandler> allHandlers;
+        private readonly List<IMiddleware> middlewares;
 
         public RunManager()
         {
-            allHandlers = new List<IHandler>();
+            middlewares = IoCContainer.Container.ResolveAll<IMiddleware>().OrderBy(m => m.Order).ToList();
         }
 
-        public void AddHandler(IHandler handler)
-        {
-            allHandlers.Add(handler);
-        }
-
-        public async Task Listen(IPAddress ipAddress, int port)
+        public void Listen(IPAddress ipAddress, int port)
         {
             var listener = new TcpListener(ipAddress, port);
             listener.Start();
             while (true)
             {
-                var client = await listener.AcceptTcpClientAsync();
+                var client = listener.AcceptTcpClient();
                 Console.WriteLine("Connection accepted.");
-                await Task.Run(() => { HandleConnection(client); });
+                Task.Run(() => { HandleConnection(client); });
             }
         }
 
         private void HandleConnection(TcpClient client)
         {
-            List<IHandler> handlers;
             byte[] allData;
+            dynamic header;
             using (var dataReader = new BinaryReader(client.GetStream(), Encoding.UTF8, true))
             {
-                dynamic header = JsonConvert.DeserializeObject<ExpandoObject>(dataReader.ReadString());
+                header = JsonConvert.DeserializeObject<ExpandoObject>(dataReader.ReadString());
                 Console.WriteLine($"Received {header.Method} command.");
 
-                var isAuthenticated = header.Token != null && new Guid(header.Token) == Global.PairId;
-
-                handlers = allHandlers.Where(r => r.RespondsToMethod(header.Method) && (!r.RequiresAuthentication || r.RequiresAuthentication == isAuthenticated)).ToList();
-
-                if (!handlers.Any())
+                using (var responder = new StreamResponder(client.GetStream()))
                 {
-                    using (var responder = new StreamResponder(client.GetStream()))
+                    if (middlewares.Any(m => m.Process(header, responder)))
                     {
-                        responder.Error($"Method not supported: {header.Method} or you are not paired.");
+                        client.Client.Shutdown(SocketShutdown.Send);
+                        return;
                     }
-                    client.Client.Shutdown(SocketShutdown.Send);
-                    return;
                 }
 
                 allData = dataReader.ReadBytes((int)header.PayloadLength);
@@ -66,25 +59,16 @@ namespace Squidd.Runner
 
             using (var responder = new StreamResponder(client.GetStream()))
             {
-                if (handlers.Any(r => r.MakesBusy))
-                {
-                    if (Global.IsBusy || !Global.SetBusy())
-                    {
-                        responder.Error("Runner is busy");
-                        client.Client.Shutdown(SocketShutdown.Send);
-                        return;
-                    }
-                }
+                var isAuthenticated = Authentication.IsAuthenticated(header);
+
+                var allHandlers = IoCContainer.Container.ResolveAll<IHandler>();
+
+                var handlers = allHandlers.Where(r => r.RespondsToMethod(header.Method) && (!r.RequiresAuthentication || r.RequiresAuthentication == isAuthenticated)).ToList();
 
                 foreach (var handler in handlers)
                 {
                     handler.Process(allData, responder);
                 }
-            }
-
-            if (handlers.Any(r => r.MakesBusy))
-            {
-                Global.ClearBusy();
             }
 
             client.Client.Shutdown(SocketShutdown.Send);

@@ -46,7 +46,8 @@ namespace Squidd.Commander.ConsoleApp
                 {
                     Method = method,
                     PayloadLength = payload.Length,
-                    Token = this.Token
+                    Token = this.Token,
+                    SessionId = SessionId
                 };
 
                 var jsonHeader = JsonConvert.SerializeObject(header);
@@ -76,7 +77,7 @@ namespace Squidd.Commander.ConsoleApp
 
                         dynamic header = JsonConvert.DeserializeObject<ExpandoObject>(rawHeader);
 
-                        var responseBody = Encoding.UTF8.GetString(reader.ReadBytes((int) header.ContentLength));
+                        var responseBody = Encoding.UTF8.GetString(reader.ReadBytes((int)header.ContentLength));
 
                         if (header.Type == "LOG" || header.Type == "EROR")
                         {
@@ -91,6 +92,10 @@ namespace Squidd.Commander.ConsoleApp
                                 this.Token = responseBody;
                                 Console.WriteLine("Token stored!");
                             }
+                            else if (header.SubType == "SEST")
+                            {
+                                this.SessionId = responseBody;
+                            }
                             else
                             {
                                 Console.WriteLine(responseBody);
@@ -104,6 +109,8 @@ namespace Squidd.Commander.ConsoleApp
                 }
             }
         }
+
+        public string SessionId { get; set; }
 
         public string Token { get; set; }
 

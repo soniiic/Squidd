@@ -27,7 +27,7 @@ namespace Squidd.Runner.Handlers
             responder.Internal("SC", "Script complete");
         }
 
-        public bool MakesBusy => true;
+        public bool CanRunWhileBusy => false;
 
         public bool RequiresAuthentication => true;
     }

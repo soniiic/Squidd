@@ -26,6 +26,8 @@ namespace Squidd.Commander.ConsoleApp
             Console.WriteLine("5 PS (delay)");
             Console.WriteLine("6 PAIR (valid)");
             Console.WriteLine("7 PAIR (invalid)");
+            Console.WriteLine("8 SESO");
+            Console.WriteLine("9 SESC");
 
             while (true)
             {
@@ -52,6 +54,13 @@ namespace Squidd.Commander.ConsoleApp
                     case '7':
                         easySender.Send("PAIR", InvalidAuth());
                         break;
+                    case '8':
+                        easySender.Send("SESO");
+                        break;
+                    case '9':
+                        easySender.Send("SESC");
+                        break;
+
                     default:
                         continue;
 

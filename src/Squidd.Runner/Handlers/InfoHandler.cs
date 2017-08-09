@@ -24,7 +24,7 @@ namespace Squidd.Runner.Handlers
             responder.Internal("INFO", JsonConvert.SerializeObject(info));
         }
 
-        public bool CanRunWhileBusy => true;
+        public bool CanRunWhenBusy => true;
 
         public bool RequiresAuthentication => false;
     }

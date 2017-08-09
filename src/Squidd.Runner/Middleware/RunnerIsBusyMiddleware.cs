@@ -11,7 +11,7 @@ namespace Squidd.Runner.Middleware
 
         public bool Process(dynamic header, StreamResponder responder)
         {
-            if (!string.IsNullOrWhiteSpace(header.SessionId))
+            if (header.SessionId == Global.SessionId.ToString())
             {
                 return false;
             }
@@ -22,7 +22,7 @@ namespace Squidd.Runner.Middleware
 
             var handlers = allHandlers.Where(r => r.RespondsToMethod(header.Method) && (!r.RequiresAuthentication || r.RequiresAuthentication == isAuthenticated)).ToList();
 
-            if (Global.IsBusy && handlers.All(r => !r.CanRunWhileBusy))
+            if (Global.IsBusy && handlers.All(r => !r.CanRunWhenBusy))
             {
                 responder.Error("Runner is busy");
                 return true;

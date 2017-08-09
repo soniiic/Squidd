@@ -6,15 +6,15 @@ namespace Squidd.Runner.Middleware
 
         public bool Process(dynamic header, StreamResponder responder)
         {
-            if (Global.IsBusy)
-            {
-                var sessionMatch = header.SessionId == Global.SessionId.ToString();
-                if (!sessionMatch)
-                {
-                    responder.Error("Session is invalid");
-                    return true;
-                }
-            }
+            //if (Global.IsBusy)
+            //{
+            //    var sessionMatch = header.SessionId == Global.SessionId.ToString();
+            //    if (!sessionMatch)
+            //    {
+            //        responder.Error("Session is invalid");
+            //        return true;
+            //    }
+            //}
             return false;
         }
     }

@@ -6,7 +6,7 @@ namespace Squidd.Runner.Handlers
 
         void Process(byte[] data, StreamResponder responder);
 
-        bool CanRunWhileBusy { get; }
+        bool CanRunWhenBusy { get; }
 
         bool RequiresAuthentication { get; }
     }

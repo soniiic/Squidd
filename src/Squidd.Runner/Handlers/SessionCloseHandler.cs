@@ -12,7 +12,7 @@
             Global.EndSession();
         }
 
-        public bool CanRunWhileBusy => true;
+        public bool CanRunWhenBusy => true;
 
         public bool RequiresAuthentication => true;
     }

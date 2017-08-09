@@ -38,40 +38,40 @@ namespace Squidd.Runner
 
         private void HandleConnection(TcpClient client)
         {
-            byte[] allData;
             dynamic header;
-            using (var dataReader = new BinaryReader(client.GetStream(), Encoding.UTF8, true))
+            using (var responder = new StreamResponder(client.GetStream()))
             {
-                header = JsonConvert.DeserializeObject<ExpandoObject>(dataReader.ReadString());
-                Console.WriteLine($"Received {header.Method} command.");
-
-                using (var responder = new StreamResponder(client.GetStream()))
+                byte[] allData;
+                using (var dataReader = new BinaryReader(client.GetStream(), Encoding.UTF8, true))
                 {
+                    header = JsonConvert.DeserializeObject<ExpandoObject>(dataReader.ReadString());
+                    Console.WriteLine($"Received {header.Method} command.");
+
                     if (middlewares.Any(m => m.Process(header, responder)))
                     {
                         client.Client.Shutdown(SocketShutdown.Send);
                         return;
                     }
+
+                    allData = dataReader.ReadBytes((int)header.PayloadLength);
                 }
 
-                allData = dataReader.ReadBytes((int)header.PayloadLength);
-            }
-
-            using (var responder = new StreamResponder(client.GetStream()))
-            {
                 var isAuthenticated = Authentication.IsAuthenticated(header);
 
                 var allHandlers = IoCContainer.Container.ResolveAll<IHandler>();
 
-                var handlers = allHandlers.Where(r => r.RespondsToMethod(header.Method) && (!r.RequiresAuthentication || r.RequiresAuthentication == isAuthenticated)).ToList();
+                var handlers = allHandlers
+                    .Where(r => r.RespondsToMethod(header.Method) &&
+                                (!r.RequiresAuthentication || r.RequiresAuthentication == isAuthenticated))
+                    .ToList();
 
                 foreach (var handler in handlers)
                 {
                     handler.Process(allData, responder);
                 }
-            }
 
-            client.Client.Shutdown(SocketShutdown.Send);
+                client.Client.Shutdown(SocketShutdown.Send);
+            }
         }
     }
 }

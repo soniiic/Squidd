@@ -41,7 +41,7 @@ namespace Squidd.Runner.Handlers
             return username == "admin" && password == "password";
         }
 
-        public bool CanRunWhenBusy => false;
+        public bool RequiresSession => false;
 
         public bool RequiresAuthentication => false;
     }

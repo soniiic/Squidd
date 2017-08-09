@@ -18,7 +18,7 @@ namespace Squidd.Runner.Handlers
             }
         }
 
-        public bool CanRunWhenBusy => false;
+        public bool RequiresSession => false;
 
         public bool RequiresAuthentication => true;
     }

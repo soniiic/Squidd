@@ -22,7 +22,7 @@ namespace Squidd.Runner.Middleware
 
             var handlers = allHandlers.Where(r => r.RespondsToMethod(header.Method) && (!r.RequiresAuthentication || r.RequiresAuthentication == isAuthenticated)).ToList();
 
-            if (Global.IsBusy && handlers.All(r => !r.CanRunWhenBusy))
+            if (Global.IsBusy && handlers.All(r => !r.RequiresSession))
             {
                 responder.Error("Runner is busy");
                 return true;

@@ -65,6 +65,11 @@ namespace Squidd.Runner
                                 (!r.RequiresAuthentication || r.RequiresAuthentication == isAuthenticated))
                     .ToList();
 
+                if (((IDictionary<string, object>)header).ContainsKey("CloseSession") && header.CloseSession == true)
+                {
+                    handlers = handlers.Union(new[] { allHandlers.Single(h => h.RespondsToMethod("SESC"))}).ToList();
+                }
+
                 foreach (var handler in handlers)
                 {
                     handler.Process(allData, responder);

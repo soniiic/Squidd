@@ -16,6 +16,8 @@ namespace Squidd.Runner.ConsoleApp.Config
             settings = JsonConvert.DeserializeObject<ExpandoObject>(rawSettings);
         }
 
+        public int Port => (int)settings.Port;
+
         public string GetTemporaryDirectoryPath()
         {
             return System.Environment.ExpandEnvironmentVariables(settings.TemporaryDirectoryPath);

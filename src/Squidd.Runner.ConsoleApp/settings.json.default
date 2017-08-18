@@ -1,3 +1,4 @@
 ﻿{
-  "TemporaryDirectoryPath": "%TEMP%\\Squidd\\"
+  "TemporaryDirectoryPath": "%TEMP%\\Squidd\\",
+  "Port": 13000
 }

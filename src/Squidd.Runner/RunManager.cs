@@ -21,50 +21,45 @@ namespace Squidd.Runner
     {
         private readonly List<IMiddleware> middlewares;
         private readonly IPEndPoint ipAddress;
-        private readonly CancellationTokenSource cancellationTokenSource;
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         private TcpListener tcpListener;
         private Task mainTask;
+        private CancellationToken cancellationToken;
 
         public RunManager(int port)
         {
             ipAddress = new IPEndPoint(IPAddress.Any, port);
             middlewares = IoCContainer.Container.ResolveAll<IMiddleware>().OrderBy(m => m.Order).ToList();
-            cancellationTokenSource = new CancellationTokenSource();
+            cancellationToken = cancellationTokenSource.Token;
         }
 
         public bool Start(HostControl hostControl)
         {
-            var cancellationToken = cancellationTokenSource.Token;
-            mainTask = Task.Run(() =>
-            {
-                tcpListener = new TcpListener(ipAddress);
-                tcpListener.Start();
-                while (true)
-                {
-                    while (!tcpListener.Pending())
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            break;
-                        }
-                        Thread.Sleep(10);
-                    }
-
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    var client = tcpListener.AcceptTcpClient();
-                    Console.WriteLine("Connection accepted.");
-                    Task.Run(() => { HandleConnection(client); });
-                }
-
-                tcpListener.Stop();
-            }, cancellationToken);
+            mainTask = Task.Run(() => { ListenOnPort(); }, cancellationToken)
+            .ContinueWith(t => { }, TaskContinuationOptions.OnlyOnCanceled);
 
             return true;
+        }
+
+        private void ListenOnPort()
+        {
+            tcpListener = new TcpListener(ipAddress);
+            tcpListener.Start();
+            while (true)
+            {
+                while (!tcpListener.Pending())
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    Thread.Sleep(10);
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var client = tcpListener.AcceptTcpClient();
+                Console.WriteLine("Connection accepted.");
+                Task.Run(() => { HandleConnection(client); });
+            }
         }
 
         private void HandleConnection(TcpClient client)
@@ -112,8 +107,9 @@ namespace Squidd.Runner
 
         public bool Stop(HostControl hostControl)
         {
-            this.cancellationTokenSource.Cancel();
+            cancellationTokenSource.Cancel();
             this.mainTask.Wait();
+            tcpListener.Stop();
             return true;
         }
     }

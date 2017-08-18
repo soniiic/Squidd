@@ -1,9 +1,10 @@
+using System;
 using System.Dynamic;
 using System.IO;
 using Newtonsoft.Json;
 using Squidd.Runner.Config;
 
-namespace Squidd.Runner.ConsoleApp.Config
+namespace Squidd.Runner.Service.Config
 {
     internal class ApplicationSettings : IApplicationSettings
     {
@@ -11,7 +12,7 @@ namespace Squidd.Runner.ConsoleApp.Config
 
         public ApplicationSettings()
         {
-            var settingsFilePath = Path.Combine(Directory.GetCurrentDirectory(), "settings.json");
+            var settingsFilePath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "settings.json");
             var rawSettings = File.ReadAllText(settingsFilePath);
             settings = JsonConvert.DeserializeObject<ExpandoObject>(rawSettings);
         }

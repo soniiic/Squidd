@@ -1,9 +1,9 @@
 ﻿using System;
 using Squidd.Runner.Config;
-using Squidd.Runner.ConsoleApp.Config;
+using Squidd.Runner.Service.Config;
 using Topshelf;
 
-namespace Squidd.Runner.ConsoleApp
+namespace Squidd.Runner.Service
 {
     class Program
     {
@@ -11,14 +11,14 @@ namespace Squidd.Runner.ConsoleApp
         {
             var settings = new ApplicationSettings();
             IoCContainer.Configure(settings);
-            var host = HostFactory.New(x =>
+
+            HostFactory.Run(x =>
             {
                 x.Service(() => new RunManager(settings.Port));
                 x.SetServiceName("SquiddRunner");
                 x.SetDescription("Squidd Runner");
+                x.RunAsLocalSystem();
             });
-
-            host.Run();
         }
     }
 }

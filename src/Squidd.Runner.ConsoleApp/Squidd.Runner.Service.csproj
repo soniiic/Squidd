@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E9F72AA8-AD24-4F0C-8FE5-833DC565EB98}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Squidd.Runner.ConsoleApp</RootNamespace>
-    <AssemblyName>Squidd.Runner.ConsoleApp</AssemblyName>
+    <RootNamespace>Squidd.Runner.Service</RootNamespace>
+    <AssemblyName>Squidd.Runner.Service</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

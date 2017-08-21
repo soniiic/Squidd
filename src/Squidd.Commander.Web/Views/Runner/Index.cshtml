@@ -1,0 +1,14 @@
+﻿@model Squidd.Commander.Web.Models.RunnerModels.IndexPageOutputModel
+
+@{
+    ViewBag.Title = "All Runners";
+}
+
+<h2>All Runners</h2>
+
+<ul>
+    @foreach (var runner in Model.Runners)
+    {
+        <li>@runner.ComputerName (@runner.EndPoint)</li>
+    }
+</ul>

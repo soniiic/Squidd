@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Squidd.Commander.Web.App_Start;
 
 namespace Squidd.Commander.Web
 {
@@ -12,6 +13,7 @@ namespace Squidd.Commander.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            MapperConfig.Register();
         }
     }
 }

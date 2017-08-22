@@ -6,11 +6,11 @@ using Dapper;
 
 namespace Squidd.Commander.DAL
 {
-    public abstract class SqlLiteBaseRepository
+    public abstract class SqliteBaseRepository
     {
         private readonly string baseDirectory;
 
-        protected SqlLiteBaseRepository(string baseDirectory)
+        protected SqliteBaseRepository(string baseDirectory)
         {
             this.baseDirectory = baseDirectory;
             if (!File.Exists(DbFile))

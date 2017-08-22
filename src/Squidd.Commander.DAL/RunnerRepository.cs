@@ -6,7 +6,7 @@ using Squidd.Commander.Domain.Repositories;
 
 namespace Squidd.Commander.DAL
 {
-    public class RunnerRepository : SqlLiteBaseRepository, IRunnerRepository
+    public class RunnerRepository : SqliteBaseRepository, IRunnerRepository
     {
         public RunnerRepository(string baseDirectory) : base(baseDirectory)
         {

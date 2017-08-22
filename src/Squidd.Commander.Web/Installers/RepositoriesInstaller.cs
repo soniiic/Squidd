@@ -10,8 +10,8 @@ namespace Squidd.Commander.Web.Installers
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            container.Register(Classes.FromAssemblyContaining<SqlLiteBaseRepository>()
-                .BasedOn<SqlLiteBaseRepository>()
+            container.Register(Classes.FromAssemblyContaining<SqliteBaseRepository>()
+                .BasedOn<SqliteBaseRepository>()
                 .WithServiceAllInterfaces()
                 .Configure(c => c.DependsOn(Dependency.OnValue("baseDirectory", HttpRuntime.BinDirectory)))
                 .LifestylePerWebRequest());

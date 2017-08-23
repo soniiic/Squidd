@@ -1,24 +1,61 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
+  padding-top: 50px;
+  padding-bottom: 20px;
+  background-color: #2c2530;
+  color: white;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 300; }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
+.left-nav .site-logo {
+  font-size: 2rem;
+  font-weight: 700; }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
-}
+.left-nav ul > li {
+  margin: 0 0 0.5rem 0; }
+  .left-nav ul > li.nav-header {
+    text-transform: uppercase;
+    padding: 0.5rem 1rem 0 1rem;
+    margin-bottom: 0;
+    font-size: 0.7rem;
+    color: #665f82; }
+  .left-nav ul > li > a {
+    display: block;
+    color: #cfd2da;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: solid 1px transparent;
+    transition: border-color ease 0.2s, color ease 0.2s; }
+    .left-nav ul > li > a:hover {
+      color: white;
+      text-decoration: none;
+      border-color: #387ebe; }
+    .left-nav ul > li > a.active {
+      border-color: #387ebe;
+      background-color: #387ebe;
+      color: white;
+      cursor: default; }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
+.content-header h2 {
+  font-size: 2rem;
+  text-transform: uppercase;
+  font-weight: 300; }
+
+.content-header h3 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-weight: 300;
+  color: #665f82; }
+
+.content-header .primary-buttons {
+  float: right; }
+
+.content-body h4 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-weight: 300;
+  color: #665f82; }
+
+hr {
+  border-top: 1px solid #434857; }
+

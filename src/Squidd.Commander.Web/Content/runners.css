@@ -1,0 +1,15 @@
+﻿.sort-by {
+  float: right; }
+
+.runner-card {
+  background-color: #014862;
+  margin-bottom: 30px; }
+  .runner-card h5 {
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: 300;
+    color: #808080; }
+  .runner-card i {
+    font-size: 5rem;
+    margin: 15px 0; }
+

@@ -1,0 +1,18 @@
+﻿[
+  {
+    "outputFile": "Content/bootstrap.css",
+    "inputFile": "Content/bootstrap.scss"
+  },
+  {
+    "outputFile": "Content/Site.css",
+    "inputFile": "Content/Site.scss"
+  },
+  {
+    "outputFile": "Content/runners.css",
+    "inputFile": "Content/runners.scss"
+  },
+  {
+    "outputFile": "Content/theme.css",
+    "inputFile": "Content/theme.scss"
+  }
+]

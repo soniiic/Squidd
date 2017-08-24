@@ -23,3 +23,6 @@
   .btn-info:focus, .btn-info.focus {
     box-shadow: none; }
 
+.modal {
+  color: #333; }
+

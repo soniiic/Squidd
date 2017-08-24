@@ -26,6 +26,6 @@ namespace Squidd.Runner.Handlers
 
         public bool RequiresSession => false;
 
-        public bool RequiresAuthentication => false;
+        public bool RequiresAuthentication => true;
     }
 }

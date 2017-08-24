@@ -59,3 +59,19 @@
 hr {
   border-top: 1px solid #434857; }
 
+/*#region bootstrap changes */
+@media screen and (min-width: 768px) {
+  .modal.center {
+    text-align: center; }
+    .modal.center:before {
+      display: inline-block;
+      vertical-align: middle;
+      content: " ";
+      height: 100%; }
+    .modal.center .modal-dialog {
+      display: inline-block;
+      text-align: left;
+      vertical-align: middle; } }
+
+/*#endregion */
+

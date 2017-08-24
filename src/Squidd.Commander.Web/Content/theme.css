@@ -3,22 +3,22 @@
   cursor: pointer; }
 
 .btn-primary {
-  background-color: #387ebe;
-  border-color: #26639b; }
+  background-color: #387EBE;
+  border-color: #3271aa; }
   .btn-primary:hover {
     background-color: #478bc9; }
 
 .btn-info {
-  background-color: #5a495b;
+  background-color: #295C8B;
   color: white;
-  border-color: #685469; }
+  border-color: #2f699f; }
   .btn-info:hover {
-    background-color: #685469;
-    border-color: #26639b;
+    background-color: #2f699f;
+    border-color: #295C8B;
     border-width: 1px; }
   .show .btn-info.dropdown-toggle {
     background-color: #387ebe;
-    border-color: #26639b;
+    border-color: #295C8B;
     border-width: 1px; }
   .btn-info:focus, .btn-info.focus {
     box-shadow: none; }

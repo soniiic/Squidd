@@ -1,7 +1,6 @@
 using System.Linq;
 using Squidd.Runner.Config;
 using Squidd.Runner.Handlers;
-using Squidd.Runner.Helpers;
 
 namespace Squidd.Runner.Middleware
 {
@@ -9,14 +8,12 @@ namespace Squidd.Runner.Middleware
     {
         public int Order => 3;
 
-        public bool Process(dynamic header, StreamResponder responder)
+        public bool Process(dynamic header, StreamResponder responder, bool isAuthenticated)
         {
             if (header.SessionId == Global.SessionId.ToString())
             {
                 return false;
             }
-
-            var isAuthenticated = Authentication.IsAuthenticated(header);
 
             var allHandlers = IoCContainer.Container.ResolveAll<IHandler>();
 

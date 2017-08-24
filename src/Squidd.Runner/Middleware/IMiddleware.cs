@@ -4,6 +4,6 @@
     {
         int Order { get; }
 
-        bool Process(dynamic header, StreamResponder responder);
+        bool Process(dynamic header, StreamResponder responder, bool authenticated);
     }
 }

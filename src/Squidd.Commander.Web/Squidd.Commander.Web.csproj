@@ -254,11 +254,11 @@
     <Content Include="Content\runners.min.css">
       <DependentUpon>runners.css</DependentUpon>
     </Content>
-    <Content Include="Content\Site.css">
+    <Content Include="Content\site.css">
       <DependentUpon>site.scss</DependentUpon>
     </Content>
-    <Content Include="Content\Site.min.css">
-      <DependentUpon>Site.css</DependentUpon>
+    <Content Include="Content\site.min.css">
+      <DependentUpon>site.css</DependentUpon>
     </Content>
     <Content Include="Content\theme.css">
       <DependentUpon>theme.scss</DependentUpon>
@@ -270,6 +270,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\runners.scss" />
     <Content Include="Content\theme.scss" />
+    <Content Include="Content\_colors.scss" />
     <None Include="Content\site.scss" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -26,12 +26,14 @@ namespace Squidd.Runner
         private TcpListener tcpListener;
         private Task mainTask;
         private CancellationToken cancellationToken;
+        private readonly Authentication authentication;
 
         public RunManager(int port)
         {
             ipAddress = new IPEndPoint(IPAddress.Any, port);
             middlewares = IoCContainer.Container.ResolveAll<IMiddleware>().OrderBy(m => m.Order).ToList();
             cancellationToken = cancellationTokenSource.Token;
+            authentication = IoCContainer.Container.Resolve<Authentication>();
         }
 
         public bool Start(HostControl hostControl)
@@ -73,7 +75,7 @@ namespace Squidd.Runner
                     header = JsonConvert.DeserializeObject<ExpandoObject>(dataReader.ReadString());
                     Console.WriteLine($"Received {header.Method} command.");
 
-                    if (middlewares.Any(m => m.Process(header, responder)))
+                    if (middlewares.Any(m => m.Process(header, responder, authentication.IsAuthenticated(header))))
                     {
                         client.Client.Shutdown(SocketShutdown.Send);
                         return;
@@ -82,7 +84,7 @@ namespace Squidd.Runner
                     allData = dataReader.ReadBytes((int)header.PayloadLength);
                 }
 
-                var isAuthenticated = Authentication.IsAuthenticated(header);
+                var isAuthenticated = authentication.IsAuthenticated(header);
 
                 var allHandlers = IoCContainer.Container.ResolveAll<IHandler>();
 

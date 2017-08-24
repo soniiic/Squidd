@@ -1,12 +1,20 @@
 ﻿using System;
+using Squidd.Runner.Config;
 
 namespace Squidd.Runner.Helpers
 {
-    static class Authentication
+    class Authentication
     {
-        internal static bool IsAuthenticated(dynamic header)
+        private readonly IApplicationSettings settings;
+
+        public Authentication(IApplicationSettings settings)
         {
-            return header.Token != null && new Guid(header.Token) == Global.PairId;
+            this.settings = settings;
+        }
+
+        internal bool IsAuthenticated(dynamic header)
+        {
+            return header.Token != null && new Guid(header.Token).ToString() == settings.GetPairId();
         }
     }
 }

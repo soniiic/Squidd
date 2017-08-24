@@ -1,7 +1,9 @@
-﻿body {
+﻿@import "_colors";
+
+body {
     padding-top: 50px;
     padding-bottom: 20px;
-    background-color: #2c2530;
+    background-color: $dark-theme-color;
     color: white;
     font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 0.9rem;
@@ -25,7 +27,7 @@
                 padding: 0.5rem 1rem 0 1rem;
                 margin-bottom: 0;
                 font-size: 0.7rem;
-                color: #665f82;
+                color: $light-theme-color;
             }
 
             & > a {
@@ -39,12 +41,12 @@
                 &:hover {
                     color: white;
                     text-decoration: none;
-                    border-color: #387ebe;
+                    border-color: $primary-theme-color;
                 }
 
                 &.active {
-                    border-color: #387ebe;
-                    background-color: #387ebe;
+                    border-color: $primary-theme-color;
+                    background-color: $primary-theme-color;
                     color: white;
                     cursor: default;
                 }
@@ -64,7 +66,7 @@
         font-size: 0.9rem;
         text-transform: uppercase;
         font-weight: 300;
-        color: #665f82;
+        color: $light-theme-color;
     }
 
     .primary-buttons {
@@ -77,7 +79,7 @@
         font-size: 1rem;
         text-transform: uppercase;
         font-weight: 300;
-        color: #665f82;
+        color: $light-theme-color;
     }
 }
 

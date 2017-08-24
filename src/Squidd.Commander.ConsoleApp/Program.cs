@@ -25,7 +25,6 @@ namespace Squidd.Commander.ConsoleApp
             Console.WriteLine("4 PS (fib)");
             Console.WriteLine("5 PS (delay)");
             Console.WriteLine("6 PAIR (valid)");
-            Console.WriteLine("7 PAIR (invalid)");
             Console.WriteLine("8 SESO");
             Console.WriteLine("9 SESC");
 
@@ -49,10 +48,7 @@ namespace Squidd.Commander.ConsoleApp
                         easySender.Send("PS", Sleep);
                         break;
                     case '6':
-                        easySender.Send("PAIR", ValidAuth());
-                        break;
-                    case '7':
-                        easySender.Send("PAIR", InvalidAuth());
+                        easySender.Send("PAIR", Auth(Console.ReadLine()));
                         break;
                     case '8':
                         easySender.Send("SESO");
@@ -60,7 +56,6 @@ namespace Squidd.Commander.ConsoleApp
                     case '9':
                         easySender.Send("SESC");
                         break;
-
                     default:
                         continue;
 
@@ -68,21 +63,11 @@ namespace Squidd.Commander.ConsoleApp
             }
         }
 
-        private static string ValidAuth()
+        private static string Auth(string passphrase)
         {
             return JsonConvert.SerializeObject(new AuthenticationInputModel()
             {
-                Username = "admin",
-                Password = "password"
-            });
-        }
-
-        private static string InvalidAuth()
-        {
-            return JsonConvert.SerializeObject(new AuthenticationInputModel()
-            {
-                Username = "invalid",
-                Password = "credentials"
+                PairPassphrase = passphrase
             });
         }
 

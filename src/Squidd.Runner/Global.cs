@@ -8,8 +8,6 @@ namespace Squidd.Runner
 
         public static bool IsBusy { get; private set; }
 
-        public static Guid PairId { get; set; }
-
         public static Guid? SessionId { get; set; }
 
         public static bool StartSession()

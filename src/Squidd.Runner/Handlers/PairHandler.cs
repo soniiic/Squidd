@@ -2,12 +2,20 @@ using System;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Squidd.Runner.Config;
 using Squidd.Shared.Models;
 
 namespace Squidd.Runner.Handlers
 {
     public class PairHandler : IHandler
     {
+        private IApplicationSettings applicationSettings;
+
+        public PairHandler(IApplicationSettings applicationSettings)
+        {
+            this.applicationSettings = applicationSettings;
+        }
+
         public bool RespondsToMethod(string method)
         {
             return method == "PAIR";
@@ -16,12 +24,12 @@ namespace Squidd.Runner.Handlers
         public void Process(byte[] data, StreamResponder responder)
         {
             var model = GetModel(data);
-            if (Authenticate(model.Username, model.Password))
+            if (Authenticate(model.PairPassphrase))
             {
-                Global.PairId = Guid.NewGuid();
+                var pairId = Guid.NewGuid();
+                applicationSettings.SetPairId(pairId);
 
-                // todo make this an actual token rather than GUID
-                responder.Internal("TOK", Global.PairId.ToString());
+                responder.Internal("TOK", pairId.ToString());
             }
             else
             {
@@ -29,16 +37,15 @@ namespace Squidd.Runner.Handlers
             }
         }
 
+        private bool Authenticate(string pairPassphrase)
+        {
+            return pairPassphrase == applicationSettings.GetPairPassphrase();
+        }
+
         private static AuthenticationInputModel GetModel(byte[] data)
         {
             var rawModel = Encoding.UTF8.GetString(data);
             return JsonConvert.DeserializeObject<AuthenticationInputModel>(rawModel);
-        }
-
-        private bool Authenticate(string username, string password)
-        {
-            // todo better authentication
-            return username == "admin" && password == "password";
         }
 
         public bool RequiresSession => false;

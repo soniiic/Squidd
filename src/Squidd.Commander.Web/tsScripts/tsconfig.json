@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "noEmitOnError": true,
+    "noImplicitAny": false,
+    "outDir": "../Scripts/",
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5",
+    "moduleResolution": "node",
+    "lib": [ "es2015", "es2017", "dom" ]
+  },
+  "exclude": [
+    "node_modules" 
+  ]
+}

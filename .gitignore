@@ -289,3 +289,4 @@ __pycache__/
 
 # Squidd Specifics
 /src/Squidd.Runner.ConsoleApp/settings.json
+/src/Squidd.Commander.Web/libs

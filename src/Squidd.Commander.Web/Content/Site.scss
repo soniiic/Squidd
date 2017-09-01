@@ -1,6 +1,11 @@
 ﻿@import "_colors";
 
 body {
+    background: $dark-theme-color; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to top, $dark-theme-color, #C33764); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(330deg, $dark-theme-color 70%, #C33764); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     padding-top: 50px;
     padding-bottom: 20px;
     background-color: $dark-theme-color;
@@ -12,8 +17,8 @@ body {
 
 .left-nav {
     .site-logo {
-        font-size: 2rem;
-        font-weight: 700;
+        padding-left:1rem;
+        width:100%;
     }
 
     ul {

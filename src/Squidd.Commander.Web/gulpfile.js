@@ -41,7 +41,7 @@ gulp.task('ts', function (done) {
 gulp.task('watch', ['watch.ts']);
 
 gulp.task('watch.ts', ['ts'], function () {
-    return gulp.watch('tsScripts/*.ts', ['ts']);
+    return gulp.watch('tsScripts/**/*.ts', ['ts']);
 });
 
 gulp.task('default', ['scriptsNStyles', 'watch']);
